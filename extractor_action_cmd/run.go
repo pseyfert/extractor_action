@@ -19,6 +19,10 @@ func main() {
 	additions := make(map[string]string)
 	for _, add := range envadds {
 		varsplit := strings.SplitN(add, "=", 2)
+		if len(varsplit) != 2 {
+			log.Printf("failed to split environment variable '%s' into name and value\n", add)
+			os.Exit(1)
+		}
 		additions[varsplit[0]] = additions[varsplit[1]]
 	}
 
@@ -26,6 +30,10 @@ func main() {
 	replacements := make(map[string]string)
 	for _, rep := range argrepl {
 		repsplit := strings.SplitN(rep, "=", 2)
+		if len(repsplit) != 2 {
+			log.Printf("failed to split argument replacement '%s' into old and new\n", rep)
+			os.Exit(1)
+		}
 		replacements[repsplit[0]] = replacements[repsplit[1]]
 	}
 
