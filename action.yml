@@ -4,6 +4,11 @@ author: '@pseyfert'
 branding:
   color: orange
   icon: list
+inputs:
+  demonstrator:
+    description: "a meaningless string"
+    required: true
+    default: "rainbow"
 runs:
   using: docker
   image: 'Dockerfile'
