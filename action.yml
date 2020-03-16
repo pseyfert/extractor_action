@@ -1,0 +1,9 @@
+name: 'extractor action'
+description: 'run the compile commands executor'
+author: '@pseyfert'
+branding:
+  color: orange
+  icon: list
+runs:
+  using: docker
+  image: 'Dockerfile'
