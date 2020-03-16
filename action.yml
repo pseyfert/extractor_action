@@ -5,10 +5,49 @@ branding:
   color: orange
   icon: list
 inputs:
-  demonstrator:
-    description: "a meaningless string"
+  env:
+    description: "additional environment variables for the executed process 'var=value:::var=value'"
+    required: false
+    default: ""
+  replace_args:
+    description: "replacement of executer arguments 'oldflag=newflag:::regex=something$1"
+    required: false
+    default: ""
+  append_args:
+    description: "additional command line arguments (appended) '-Wall:-Wextra'"
+    required: false
+    default: ""
+  prepend_args:
+    description: "additional command line arguments (prepended) '-Wall:-Wextra'"
+    required: false
+    default: ""
+  remove_args:
+    description: "arguments that shall be removed '-W.*'"
+    required: false
+    default: ""
+  exe:
+    description: "executable to execute for all TUs"
     required: true
-    default: "rainbow"
+  accept_tus:
+    description: "filter which TUs shall be processed 'obj1:obj2:obj.*'"
+    required: false
+    default: ""
+  reject_tus:
+    description: "filter which TUs shall not be processed 'obj1:obj2:obj.*'"
+    required: false
+    default: ""
+  trace_file:
+    description: "trace file"
+    required: false
+    default: ""
+  build_path:
+    description: "path to compile_commands.json"
+    required: true
+  concurrency:
+    description: "how many parallel executions should run"
+    required: false
+    default: 1
+
 runs:
   using: docker
   image: 'Dockerfile'
