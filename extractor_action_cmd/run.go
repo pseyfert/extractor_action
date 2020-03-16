@@ -18,6 +18,9 @@ func main() {
 	envadds := strings.Split(os.Getenv("INPUT_ENV"), ":::")
 	additions := make(map[string]string)
 	for _, add := range envadds {
+		if add == "" {
+			continue
+		}
 		varsplit := strings.SplitN(add, "=", 2)
 		if len(varsplit) != 2 {
 			log.Printf("failed to split environment variable '%s' into name and value\n", add)
@@ -29,6 +32,9 @@ func main() {
 	argrepl := strings.Split(os.Getenv("INPUT_REPLACE_ARGS"), ":::")
 	replacements := make(map[string]string)
 	for _, rep := range argrepl {
+		if rep == "" {
+			continue
+		}
 		repsplit := strings.SplitN(rep, "=", 2)
 		if len(repsplit) != 2 {
 			log.Printf("failed to split argument replacement '%s' into old and new\n", rep)
