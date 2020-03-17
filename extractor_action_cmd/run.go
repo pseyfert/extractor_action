@@ -26,13 +26,20 @@ import (
 	"github.com/pseyfert/compile_commands_json_executer/lib"
 )
 
+func modSplit(s, sep string) []string {
+	if s == "" {
+		return []string{}
+	}
+	return strings.Split(s, sep)
+}
+
 func main() {
 	concurrency, err := strconv.Atoi(os.Getenv("INPUT_CONCURRENCY"))
 	if err != nil {
 		log.Printf("%v\n", err)
 		os.Exit(1)
 	}
-	envadds := strings.Split(os.Getenv("INPUT_ENV"), ":::")
+	envadds := modSplit(os.Getenv("INPUT_ENV"), ":::")
 	additions := make(map[string]string)
 	for _, add := range envadds {
 		if add == "" {
@@ -46,7 +53,7 @@ func main() {
 		additions[varsplit[0]] = additions[varsplit[1]]
 	}
 
-	argrepl := strings.Split(os.Getenv("INPUT_REPLACE_ARGS"), ":::")
+	argrepl := modSplit(os.Getenv("INPUT_REPLACE_ARGS"), ":::")
 	replacements := make(map[string]string)
 	for _, rep := range argrepl {
 		if rep == "" {
@@ -61,12 +68,12 @@ func main() {
 	}
 
 	executer := compile_commands_json_executer.Executer{
-		Appends:     strings.Split(os.Getenv("INPUT_APPEND_ARGS"), ":"),
-		Prepends:    strings.Split(os.Getenv("INPUT_PREPEND_ARGS"), ":"),
-		RemoveArgs:  strings.Split(os.Getenv("INPUT_REMOVE_ARGS"), ":"),
+		Appends:     modSplit(os.Getenv("INPUT_APPEND_ARGS"), ":"),
+		Prepends:    modSplit(os.Getenv("INPUT_PREPEND_ARGS"), ":"),
+		RemoveArgs:  modSplit(os.Getenv("INPUT_REMOVE_ARGS"), ":"),
 		Exe:         os.Getenv("INPUT_EXE"),
-		AcceptTU:    strings.Split(os.Getenv("INPUT_ACCEPT_TUS"), ":"),
-		RejectTU:    strings.Split(os.Getenv("INPUT_REJECT_TUS"), ":"),
+		AcceptTU:    modSplit(os.Getenv("INPUT_ACCEPT_TUS"), ":"),
+		RejectTU:    modSplit(os.Getenv("INPUT_REJECT_TUS"), ":"),
 		Env:         additions,
 		Replace:     replacements,
 		Concurrency: concurrency,
