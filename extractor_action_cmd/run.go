@@ -52,7 +52,7 @@ func main() {
 			log.Printf("failed to split environment variable '%s' into name and value\n", add)
 			os.Exit(1)
 		}
-		additions[varsplit[0]] = additions[varsplit[1]]
+		additions[varsplit[0]] = varsplit[1]
 	}
 
 	argrepl := modSplit(os.Getenv("INPUT_REPLACE_ARGS"), ":::")
@@ -66,7 +66,7 @@ func main() {
 			log.Printf("failed to split argument replacement '%s' into old and new\n", rep)
 			os.Exit(1)
 		}
-		replacements[repsplit[0]] = replacements[repsplit[1]]
+		replacements[repsplit[0]] = repsplit[1]
 	}
 
 	executer := compile_commands_json_executer.Executer{
@@ -126,7 +126,7 @@ func githubenv() error {
 	if _, err := os.Stat(badworkdir); os.IsNotExist(err) {
 		return fmt.Errorf("The directory %s doesn't exist", badworkdir)
 	}
-	if _, err := ioutil.ReadDir(gooddir); err != nil {
+	if _, err := ioutil.ReadDir(gooddir); err == nil {
 		// atleastonefile := false
 		// for _, file := range files {
 		// 	log.Printf("in the created dir, there is a file: %s\n", file)
@@ -138,7 +138,7 @@ func githubenv() error {
 	} else {
 		return fmt.Errorf("could not read contents of %s", gooddir)
 	}
-	if _, err := ioutil.ReadDir(betterworkdir); err != nil {
+	if _, err := ioutil.ReadDir(betterworkdir); err == nil {
 		// atleastonefile := false
 		// for _, file := range files {
 		// 	log.Printf("in the symlinked dir, there is a file: %s\n", file)
