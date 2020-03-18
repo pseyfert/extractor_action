@@ -107,7 +107,7 @@ func githubenv() error {
 		return fmt.Errorf("could not parse repository name %s", reponame)
 	}
 
-	gooddir := "__w/" + split[1]
+	gooddir := "/__w/" + split[1]
 	betterworkdir := gooddir + "/" + split[1]
 	if err = os.MkdirAll(gooddir, 0755); err != nil {
 		return err
