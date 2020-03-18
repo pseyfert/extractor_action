@@ -90,7 +90,7 @@ func main() {
 	}
 	err = githubenv()
 	if err != nil {
-		log.Printf("bodging github working directories failed: %v\ngood luck.", err)
+		log.Printf("Bodging github working directories failed: %v\nGood luck.", err)
 	}
 	err = executer.Run(database)
 	if err != nil {
@@ -104,7 +104,7 @@ func githubenv() error {
 	reponame := os.Getenv("GITHUB_REPOSITORY")
 	split := strings.SplitN(reponame, "/", 2)
 	if len(split) != 2 {
-		return fmt.Errorf("could not parse repository name %s", reponame)
+		return fmt.Errorf("Could not parse repository name %s", reponame)
 	}
 
 	gooddir := "/__w/" + split[1]
@@ -116,48 +116,39 @@ func githubenv() error {
 	if err = os.Symlink(badworkdir, betterworkdir); err != nil {
 		return err
 	}
-	log.Printf("created dir %s and symlink therein %s pointing to %s\n", gooddir, betterworkdir, badworkdir)
+	log.Printf("In attempt to mimic the directory structure in not-docker github actions (such as the cmake_build_action) the directory %s got created and a symlink therein (%s) pointing to %s", gooddir, betterworkdir, badworkdir)
 	if _, err := os.Stat(gooddir); os.IsNotExist(err) {
-		return fmt.Errorf("new dir doesn't exist")
+		return fmt.Errorf("The newly created directory %s doesn't exist", gooddir)
 	}
 	if _, err := os.Stat(betterworkdir); os.IsNotExist(err) {
-		return fmt.Errorf("new symlink doesn't exist")
+		return fmt.Errorf("The newly created symlink (%s) doesn't exist", betterworkdir)
 	}
 	if _, err := os.Stat(badworkdir); os.IsNotExist(err) {
-		return fmt.Errorf("symlink target doesn't exist")
+		return fmt.Errorf("The directory %s doesn't exist", badworkdir)
 	}
-	if files, err := ioutil.ReadDir(gooddir); err != nil {
-		atleastonefile := false
-		for _, file := range files {
-			log.Printf("in the created dir, there is a file: %s\n", file)
-			atleastonefile = true
-		}
-		if !atleastonefile {
-			log.Printf("there appears to be no content in %s\n", gooddir)
-		}
+	if _, err := ioutil.ReadDir(gooddir); err != nil {
+		// atleastonefile := false
+		// for _, file := range files {
+		// 	log.Printf("in the created dir, there is a file: %s\n", file)
+		// 	atleastonefile = true
+		// }
+		// if !atleastonefile {
+		// 	log.Printf("there appears to be no content in %s\n", gooddir)
+		// }
 	} else {
 		return fmt.Errorf("could not read contents of %s", gooddir)
 	}
-	if files, err := ioutil.ReadDir(betterworkdir); err != nil {
-		atleastonefile := false
-		for _, file := range files {
-			log.Printf("in the symlinked dir, there is a file: %s\n", file)
-			atleastonefile = true
-		}
-		if !atleastonefile {
-			log.Printf("there appears to be no content in %s\n", betterworkdir)
-		}
+	if _, err := ioutil.ReadDir(betterworkdir); err != nil {
+		// atleastonefile := false
+		// for _, file := range files {
+		// 	log.Printf("in the symlinked dir, there is a file: %s\n", file)
+		// 	atleastonefile = true
+		// }
+		// if !atleastonefile {
+		// 	log.Printf("there appears to be no content in %s\n", betterworkdir)
+		// }
 	} else {
 		return fmt.Errorf("could not read contents of %s", betterworkdir)
 	}
 	return nil
-	// log.Println("Environment is")
-	// for _, e := range os.Environ() {
-	// 	pair := strings.SplitN(e, "=", 2)
-	// 	if len(pair) == 2 {
-	// 		log.Printf("%s\t: %s\n", pair[0], pair[1])
-	// 	} else {
-	// 		log.Printf("Error when parsing %s\n", e)
-	// 	}
-	// }
 }
