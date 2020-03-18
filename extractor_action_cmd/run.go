@@ -19,6 +19,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -99,16 +100,40 @@ func main() {
 }
 
 func githubenv() error {
+	var err error
 	reponame := os.Getenv("GITHUB_REPOSITORY")
 	split := strings.SplitN(reponame, "/", 2)
 	if len(split) != 2 {
 		return fmt.Errorf("could not parse repository name %s", reponame)
 	}
 
-	betterworkdir := "__w/" + split[1] + "/" + split[1]
-	os.MkdirAll("__w/"+split[1], 0755)
+	gooddir := "__w/" + split[1]
+	betterworkdir := gooddir + "/" + split[1]
+	if err = os.MkdirAll(gooddir, 0755); err != nil {
+		return err
+	}
 	badworkdir := os.Getenv("GITHUB_WORKSPACE")
-	return os.Symlink(badworkdir, betterworkdir)
+	if err = os.Symlink(badworkdir, betterworkdir); err != nil {
+		return err
+	}
+	log.Printf("created dir %s and symlink therein %s pointing to %s\n", gooddir, betterworkdir, badworkdir)
+	if _, err := os.Stat(gooddir); os.IsNotExist(err) {
+		return fmt.Errorf("new dir doesn't exist")
+	}
+	if _, err := os.Stat(betterworkdir); os.IsNotExist(err) {
+		return fmt.Errorf("new symlink doesn't exist")
+	}
+	if _, err := os.Stat(badworkdir); os.IsNotExist(err) {
+		return fmt.Errorf("symlink target doesn't exist")
+	}
+	if files, err := ioutil.ReadDir(betterworkdir); err != nil {
+		for _, file := range files {
+			log.Printf("in the symlinked dir, there is a file: %s\n", file)
+		}
+	} else {
+		return fmt.Errorf("could not read contents of %s", betterworkdir)
+	}
+	return nil
 	// log.Println("Environment is")
 	// for _, e := range os.Environ() {
 	// 	pair := strings.SplitN(e, "=", 2)
