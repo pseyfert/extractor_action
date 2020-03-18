@@ -18,6 +18,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -86,7 +87,10 @@ func main() {
 	} else {
 		log.Printf("Will try to read %s, without usable working directory: %v\n", database, err)
 	}
-	printenv()
+	err = githubenv()
+	if err != nil {
+		log.Printf("bodging github working directories failed: %v\ngood luck.", err)
+	}
 	err = executer.Run(database)
 	if err != nil {
 		log.Printf("%v\n", err)
@@ -94,14 +98,23 @@ func main() {
 	}
 }
 
-func printenv() {
-	log.Println("Environment is")
-	for _, e := range os.Environ() {
-		pair := strings.SplitN(e, "=", 2)
-		if len(pair) == 2 {
-			log.Printf("%s\t: %s\n", pair[0], pair[1])
-		} else {
-			log.Printf("Error when parsing %s\n", e)
-		}
+func githubenv() error {
+	reponame := os.Getenv("GITHUB_REPOSITORY")
+	split := strings.SplitN(reponame, "/", 2)
+	if len(split) != 2 {
+		return fmt.Errorf("could not parse repository name %s", reponame)
 	}
+
+	betterworkdir := "__w/" + split[1] + "/" + split[1]
+	badworkdir := os.Getenv("GITHUB_WORKSPACE")
+	return os.Symlink(badworkdir, betterworkdir)
+	// log.Println("Environment is")
+	// for _, e := range os.Environ() {
+	// 	pair := strings.SplitN(e, "=", 2)
+	// 	if len(pair) == 2 {
+	// 		log.Printf("%s\t: %s\n", pair[0], pair[1])
+	// 	} else {
+	// 		log.Printf("Error when parsing %s\n", e)
+	// 	}
+	// }
 }
