@@ -127,8 +127,13 @@ func githubenv() error {
 		return fmt.Errorf("symlink target doesn't exist")
 	}
 	if files, err := ioutil.ReadDir(betterworkdir); err != nil {
+		atleastonefile := false
 		for _, file := range files {
 			log.Printf("in the symlinked dir, there is a file: %s\n", file)
+			atleastonefile = true
+		}
+		if !atleastonefile {
+			log.Printf("there appears to be no content in %s\n", betterworkdir)
 		}
 	} else {
 		return fmt.Errorf("could not read contents of %s", betterworkdir)
