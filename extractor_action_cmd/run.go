@@ -86,9 +86,22 @@ func main() {
 	} else {
 		log.Printf("Will try to read %s, without usable working directory: %v\n", database, err)
 	}
+	printenv()
 	err = executer.Run(database)
 	if err != nil {
 		log.Printf("%v\n", err)
 		os.Exit(1)
+	}
+}
+
+func printenv() {
+	fmt.Println("Environment is")
+	for _, e := range os.Environ() {
+		pair := strings.SplitN(e, "=", 2)
+		if len(pair) == 2 {
+			fmt.Printf("%s\t: %s\n", pair[0], pair[1])
+		} else {
+			fmt.Printf("Error when parsing %s\n", e)
+		}
 	}
 }
