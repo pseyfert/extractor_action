@@ -80,7 +80,9 @@ func main() {
 		TraceFile:   os.Getenv("INPUT_TRACE_FILE"),
 	}
 
-	err = executer.Run(os.Getenv("INPUT_BUILD_PATH"))
+	database := os.Getenv("INPUT_BUILD_PATH")
+	log.Printf("Will try to read %s\n", database)
+	err = executer.Run(database)
 	if err != nil {
 		log.Printf("%v\n", err)
 		os.Exit(1)
