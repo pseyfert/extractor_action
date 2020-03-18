@@ -84,7 +84,7 @@ func main() {
 	if wd, err := os.Getwd(); err != nil {
 		log.Printf("Will try to read %s, which might be relative to %s\n", database, wd)
 	} else {
-		log.Printf("Will try to read %s, without usable working directory\n", database)
+		log.Printf("Will try to read %s, without usable working directory: %v\n", database, err)
 	}
 	err = executer.Run(database)
 	if err != nil {
