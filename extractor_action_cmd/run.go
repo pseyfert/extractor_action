@@ -95,13 +95,13 @@ func main() {
 }
 
 func printenv() {
-	fmt.Println("Environment is")
+	log.Println("Environment is")
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
 		if len(pair) == 2 {
-			fmt.Printf("%s\t: %s\n", pair[0], pair[1])
+			log.Printf("%s\t: %s\n", pair[0], pair[1])
 		} else {
-			fmt.Printf("Error when parsing %s\n", e)
+			log.Printf("Error when parsing %s\n", e)
 		}
 	}
 }
