@@ -81,7 +81,11 @@ func main() {
 	}
 
 	database := os.Getenv("INPUT_BUILD_PATH")
-	log.Printf("Will try to read %s\n", database)
+	if wd, err := os.Getwd(); err != nil {
+		log.Printf("Will try to read %s, which might be relative to %s\n", database, wd)
+	} else {
+		log.Printf("Will try to read %s, without usable working directory\n", database)
+	}
 	err = executer.Run(database)
 	if err != nil {
 		log.Printf("%v\n", err)
