@@ -126,6 +126,18 @@ func githubenv() error {
 	if _, err := os.Stat(badworkdir); os.IsNotExist(err) {
 		return fmt.Errorf("symlink target doesn't exist")
 	}
+	if files, err := ioutil.ReadDir(gooddir); err != nil {
+		atleastonefile := false
+		for _, file := range files {
+			log.Printf("in the created dir, there is a file: %s\n", file)
+			atleastonefile = true
+		}
+		if !atleastonefile {
+			log.Printf("there appears to be no content in %s\n", gooddir)
+		}
+	} else {
+		return fmt.Errorf("could not read contents of %s", gooddir)
+	}
 	if files, err := ioutil.ReadDir(betterworkdir); err != nil {
 		atleastonefile := false
 		for _, file := range files {
