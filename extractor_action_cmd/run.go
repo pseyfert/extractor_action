@@ -106,6 +106,7 @@ func githubenv() error {
 	}
 
 	betterworkdir := "__w/" + split[1] + "/" + split[1]
+	os.MkdirAll("__w/"+split[1], 0755)
 	badworkdir := os.Getenv("GITHUB_WORKSPACE")
 	return os.Symlink(badworkdir, betterworkdir)
 	// log.Println("Environment is")
